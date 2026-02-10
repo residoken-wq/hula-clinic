@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: clinic_db
+    restart: always
+    environment:
+      POSTGRES_USER: clinic_user
+      POSTGRES_PASSWORD: clinic_password
+      POSTGRES_DB: clinic_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - clinic_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U clinic_user -d clinic_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - default
+
+  app:
+    build:
+      context: .
+      target: development
+    container_name: clinic_app
+    restart: always
+    command: npm run start:dev
+    ports:
+      - "3001:3000"
+    environment:
+      - INDUSTRY_TYPE=clinic
+      - DB_HOST=clinic_db
+      - DB_PORT=5432
+      - DB_USERNAME=clinic_user
+      - DB_PASSWORD=clinic_password
+      - DB_DATABASE=clinic_db
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - default
+    volumes:
+      - ./src:/app/src
+      - ./uploads:/app/uploads
+      - /app/node_modules
+      - ./tsconfig.json:/app/tsconfig.json
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: production
+    container_name: clinic_frontend
+    restart: always
+    ports:
+      - "3002:80"
+    depends_on:
+      - app
+    networks:
+      - default
+
+volumes:
+  clinic_postgres_data:
+
+
+networks:
+  default:
+    driver: bridge
