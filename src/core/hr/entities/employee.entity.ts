@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { EncryptedColumnTransformer } from '../../../common/encryption/encrypted-column.transformer';
 
 @Entity('employees')
 export class Employee {
@@ -18,10 +19,10 @@ export class Employee {
     @Column({ nullable: true })
     department: string; // Khoa Nội, Khoa Ngoại, etc.
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     phone: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     email: string;
 
     @Column({ type: 'date', nullable: true })
@@ -30,10 +31,10 @@ export class Employee {
     @Column({ nullable: true })
     gender: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     address: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     id_number: string;
 
     @Column({ type: 'date', nullable: true })
@@ -47,6 +48,9 @@ export class Employee {
 
     @Column({ nullable: true })
     shift_id: number;
+
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
+    bank_account: string;
 
     @ManyToOne(() => User, { nullable: true })
     @JoinColumn({ name: 'user_id' })

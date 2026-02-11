@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { EncryptedColumnTransformer } from '../../../common/encryption/encrypted-column.transformer';
 
 @Entity('patients')
 export class Patient {
@@ -17,16 +18,16 @@ export class Patient {
     @Column({ default: 'NAM' })
     gender: string; // NAM, NU, KHAC
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     phone: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     email: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     address: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     id_number: string;
 
     @Column({ nullable: true })
@@ -38,7 +39,7 @@ export class Patient {
     @Column('text', { nullable: true })
     medical_history: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     insurance_number: string;
 
     @Column({ nullable: true })
@@ -50,7 +51,7 @@ export class Patient {
     @Column({ nullable: true })
     emergency_contact_name: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     emergency_contact_phone: string;
 
     @Column({ nullable: true })

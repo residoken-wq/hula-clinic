@@ -8,6 +8,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ActivityInterceptor } from './common/interceptors/activity.interceptor';
 import { UserContextInterceptor } from './common/interceptors/user-context.interceptor';
 
+// --- Encryption ---
+import { EncryptionModule } from './common/encryption/encryption.module';
+
 // --- Core Modules ---
 import { AuthModule } from './core/auth/auth.module';
 import { UsersModule } from './core/users/users.module';
@@ -89,6 +92,7 @@ const CLINIC_MODULES = [
         // --- Config ---
         ConfigModule.forRoot({ isGlobal: true }),
         ScheduleModule.forRoot(),
+        EncryptionModule,
 
         // --- Database ---
         TypeOrmModule.forRootAsync({

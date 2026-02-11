@@ -25,7 +25,7 @@ export class PatientsService {
 
         const qb = this.repo.createQueryBuilder('p');
         if (query.search) {
-            qb.where('(p.full_name ILIKE :s OR p.phone ILIKE :s OR p.patient_code ILIKE :s)', { s: `%${query.search}%` });
+            qb.where('(p.full_name ILIKE :s OR p.patient_code ILIKE :s)', { s: `%${query.search}%` });
         }
         if (query.status) qb.andWhere('p.status = :status', { status: query.status });
 

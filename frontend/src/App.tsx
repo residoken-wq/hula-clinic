@@ -10,6 +10,12 @@ import {
 } from '@ant-design/icons';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import PatientsPage from './pages/PatientsPage';
+import AppointmentsPage from './pages/AppointmentsPage';
+import MedicalRecordsPage from './pages/MedicalRecordsPage';
+import PharmacyPage from './pages/PharmacyPage';
+import ServicesPage from './pages/ServicesPage';
+import BillingPage from './pages/BillingPage';
 
 const { Sider, Header, Content } = Layout;
 
@@ -120,12 +126,12 @@ function AppLayout() {
                 <Content style={{ padding: 24, minHeight: 'calc(100vh - 56px)', background: '#0f172a' }}>
                     <Routes>
                         <Route path="/" element={<DashboardPage />} />
-                        <Route path="/patients" element={<PlaceholderPage title="Bệnh nhân" icon="👤" />} />
-                        <Route path="/appointments" element={<PlaceholderPage title="Lịch hẹn" icon="📅" />} />
-                        <Route path="/medical-records" element={<PlaceholderPage title="Bệnh án" icon="📋" />} />
-                        <Route path="/pharmacy" element={<PlaceholderPage title="Kho thuốc" icon="💊" />} />
-                        <Route path="/services" element={<PlaceholderPage title="Dịch vụ" icon="🔬" />} />
-                        <Route path="/billing" element={<PlaceholderPage title="Thanh toán" icon="💰" />} />
+                        <Route path="/patients" element={<PatientsPage />} />
+                        <Route path="/appointments" element={<AppointmentsPage />} />
+                        <Route path="/medical-records" element={<MedicalRecordsPage />} />
+                        <Route path="/pharmacy" element={<PharmacyPage />} />
+                        <Route path="/services" element={<ServicesPage />} />
+                        <Route path="/billing" element={<BillingPage />} />
                         <Route path="/finance" element={<PlaceholderPage title="Tài chính" icon="📊" />} />
                         <Route path="/hr" element={<PlaceholderPage title="Nhân sự" icon="👔" />} />
                         <Route path="/tasks" element={<PlaceholderPage title="Công việc" icon="✅" />} />
