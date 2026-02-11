@@ -29,7 +29,7 @@ export class HrService {
             const count = await this.empRepo.count();
             data.employee_code = `NV-${String(count + 1).padStart(5, '0')}`;
         }
-        return this.empRepo.save(this.empRepo.create(data));
+        return this.empRepo.save(this.empRepo.create(data as Partial<Employee>));
     }
 
     async updateEmployee(id: number, data: any): Promise<Employee> {
@@ -77,7 +77,7 @@ export class HrService {
 
     // --- Leave ---
     async createLeave(data: any): Promise<LeaveRequest> {
-        return this.leaveRepo.save(this.leaveRepo.create(data));
+        return this.leaveRepo.save(this.leaveRepo.create(data as Partial<LeaveRequest>));
     }
 
     async approveLeave(id: number, approvedById: number) {
@@ -102,6 +102,6 @@ export class HrService {
     }
 
     async createShift(data: any): Promise<WorkShift> {
-        return this.shiftRepo.save(this.shiftRepo.create(data));
+        return this.shiftRepo.save(this.shiftRepo.create(data as Partial<WorkShift>));
     }
 }

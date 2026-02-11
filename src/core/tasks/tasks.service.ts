@@ -28,7 +28,7 @@ export class TasksService {
     }
 
     async create(data: any): Promise<Task> {
-        const task = await this.taskRepo.save(this.taskRepo.create(data));
+        const task = await this.taskRepo.save(this.taskRepo.create(data as Partial<Task>));
         if (task.assigned_to_id) {
             await this.notifService.create({
                 user_id: task.assigned_to_id,

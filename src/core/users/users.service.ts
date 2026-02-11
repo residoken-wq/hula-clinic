@@ -31,7 +31,7 @@ export class UsersService {
 
     async createUser(data: any): Promise<User> {
         const hashedPassword = await bcrypt.hash(data.password, 10);
-        const user = this.userRepo.create({ ...data, password: hashedPassword });
+        const user = this.userRepo.create({ ...data, password: hashedPassword } as Partial<User>);
         return this.userRepo.save(user);
     }
 
@@ -68,13 +68,13 @@ export class UsersService {
     }
 
     async createGroup(data: any): Promise<UserGroup> {
-        const group = this.groupRepo.create(data);
+        const group = this.groupRepo.create(data as Partial<UserGroup>);
         return this.groupRepo.save(group);
     }
 
     async updateGroupPermissions(groupId: number, permissions: any[]) {
         await this.permRepo.delete({ group_id: groupId });
-        const perms = permissions.map(p => this.permRepo.create({ ...p, group_id: groupId }));
+        const perms = permissions.map(p => this.permRepo.create({ ...p, group_id: groupId } as Partial<GroupPermission>));
         await this.permRepo.save(perms);
         return this.getGroupDetail(groupId);
     }

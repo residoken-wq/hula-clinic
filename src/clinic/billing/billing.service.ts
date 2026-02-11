@@ -36,7 +36,7 @@ export class BillingService {
         invoiceData.insurance_amount = insuranceAmount;
         invoiceData.patient_amount = totalAmount - (invoiceData.discount_amount || 0) - insuranceAmount;
 
-        const invoice = await this.invoiceRepo.save(this.invoiceRepo.create(invoiceData));
+        const invoice = await this.invoiceRepo.save(this.invoiceRepo.create(invoiceData as Partial<Invoice>));
 
         if (items?.length) {
             for (const item of items) {

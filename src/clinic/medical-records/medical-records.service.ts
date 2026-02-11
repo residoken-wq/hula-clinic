@@ -17,7 +17,7 @@ export class MedicalRecordsService {
         if (!data.visit_date) data.visit_date = new Date();
 
         const { prescriptions, ...recordData } = data;
-        const record = await this.recordRepo.save(this.recordRepo.create(recordData));
+        const record = await this.recordRepo.save(this.recordRepo.create(recordData as Partial<MedicalRecord>));
 
         if (prescriptions?.length) {
             for (const p of prescriptions) {

@@ -36,6 +36,8 @@ async function bootstrap() {
                 'http://localhost:3001',
                 'http://localhost:3002',
                 'http://localhost:5173',
+                'https://clinic.nemmamnon.com',
+                'http://clinic.nemmamnon.com',
             ],
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
             credentials: true,
