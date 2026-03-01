@@ -35,6 +35,17 @@ export class AppointmentsController {
     @Post(':id/check-in')
     checkIn(@Param('id') id: number) { return this.svc.checkIn(id); }
 
+    @Post(':id/start')
+    startConsultation(@Param('id') id: number) { return this.svc.startConsultation(id); }
+
+    @Post(':id/complete')
+    completeAppointment(@Param('id') id: number) { return this.svc.completeAppointment(id); }
+
+    @Post(':id/cancel')
+    cancelAppointment(@Param('id') id: number, @Body() body: { reason?: string }) {
+        return this.svc.cancelAppointment(id, body?.reason);
+    }
+
     @Delete(':id')
     remove(@Param('id') id: number) { return this.svc.delete(id); }
 }

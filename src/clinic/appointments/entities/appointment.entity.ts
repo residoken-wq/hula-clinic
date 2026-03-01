@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Patient } from '../../patients/entities/patient.entity';
 import { Employee } from '../../../core/hr/entities/employee.entity';
+import { Room } from '../../rooms/entities/room.entity';
 
 @Entity('appointments')
 export class Appointment {
@@ -27,6 +28,13 @@ export class Appointment {
     @Column({ nullable: true })
     service_name: string;
 
+    @ManyToOne(() => Room, { eager: true, nullable: true })
+    @JoinColumn({ name: 'room_id' })
+    room: Room;
+
+    @Column({ nullable: true })
+    room_id: number;
+
     @Column({ type: 'date' })
     appointment_date: Date;
 
@@ -47,6 +55,12 @@ export class Appointment {
 
     @Column('text', { nullable: true })
     cancel_reason: string;
+
+    @Column({ type: 'timestamp', nullable: true })
+    checked_in_at: Date;
+
+    @Column({ nullable: true })
+    medical_record_id: number;
 
     @Column({ nullable: true })
     created_by_id: number;

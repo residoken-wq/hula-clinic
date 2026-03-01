@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Invoice } from './entities/invoice.entity';
 import { InvoiceItem } from './entities/invoice-item.entity';
 import { FinanceService } from '../../core/finance/finance.service';
+import { NotificationsService } from '../../core/notifications/notifications.service';
 
 @Injectable()
 export class BillingService {
@@ -11,6 +12,7 @@ export class BillingService {
         @InjectRepository(Invoice) private invoiceRepo: Repository<Invoice>,
         @InjectRepository(InvoiceItem) private itemRepo: Repository<InvoiceItem>,
         private financeService: FinanceService,
+        private notifService: NotificationsService,
     ) { }
 
     async create(data: any): Promise<Invoice> {
@@ -94,6 +96,18 @@ export class BillingService {
             payment_method: method,
             transaction_date: new Date(),
         });
+
+        // SD4: Receipt notification
+        if (invoice.payment_status === 'PAID') {
+            // Notify via system notification (general audit)
+            await this.notifService.create({
+                user_id: 0, // system/broadcast
+                title: 'Thanh toán thành công',
+                message: `Hóa đơn ${invoice.invoice_code} - ${invoice.patient?.full_name}: ${new Intl.NumberFormat('vi-VN').format(invoice.paid_amount)}đ (${method})`,
+                type: 'billing',
+                link: '/billing',
+            });
+        }
 
         return this.findOne(id);
     }

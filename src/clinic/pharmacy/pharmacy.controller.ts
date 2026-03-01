@@ -32,6 +32,11 @@ export class PharmacyController {
         return this.svc.dispenseMedicine(body.medicine_id, body.quantity);
     }
 
+    @Post('dispense-prescription')
+    dispenseByPrescription(@Body() body: { prescription_ids: number[] }) {
+        return this.svc.dispenseByPrescription(body.prescription_ids);
+    }
+
     @Get('expiring')
     getExpiring(@Query('days') days?: number) { return this.svc.getExpiringMedicines(days || 30); }
 

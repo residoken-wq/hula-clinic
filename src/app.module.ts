@@ -45,6 +45,8 @@ import { MedicalRecordsModule } from './clinic/medical-records/medical-records.m
 import { PharmacyModule } from './clinic/pharmacy/pharmacy.module';
 import { ServicesModule } from './clinic/services/services.module';
 import { BillingModule } from './clinic/billing/billing.module';
+import { RoomsModule } from './clinic/rooms/rooms.module';
+import { DoctorsModule } from './clinic/doctors/doctors.module';
 
 // --- Clinic Entities ---
 import { Patient } from './clinic/patients/entities/patient.entity';
@@ -57,6 +59,8 @@ import { MedicalService } from './clinic/services/entities/medical-service.entit
 import { ServiceCategory } from './clinic/services/entities/service-category.entity';
 import { Invoice } from './clinic/billing/entities/invoice.entity';
 import { InvoiceItem } from './clinic/billing/entities/invoice-item.entity';
+import { Room } from './clinic/rooms/entities/room.entity';
+import { DoctorSchedule } from './clinic/doctors/entities/doctor-schedule.entity';
 
 // === Collect ALL entities ===
 const ALL_ENTITIES = [
@@ -75,6 +79,8 @@ const ALL_ENTITIES = [
     Medicine, MedicineStock,
     MedicalService, ServiceCategory,
     Invoice, InvoiceItem,
+    // Rooms & Doctors
+    Room, DoctorSchedule,
 ];
 
 // === Collect Clinic Modules ===
@@ -85,6 +91,8 @@ const CLINIC_MODULES = [
     PharmacyModule,
     ServicesModule,
     BillingModule,
+    RoomsModule,
+    DoctorsModule,
 ];
 
 @Module({

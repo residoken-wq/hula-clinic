@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan, ILike } from 'typeorm';
 import { Medicine } from './entities/medicine.entity';
 import { MedicineStock } from './entities/medicine-stock.entity';
+import { Prescription } from '../medical-records/entities/prescription.entity';
 
 @Injectable()
 export class PharmacyService {
     constructor(
         @InjectRepository(Medicine) private medRepo: Repository<Medicine>,
         @InjectRepository(MedicineStock) private stockRepo: Repository<MedicineStock>,
+        @InjectRepository(Prescription) private prescRepo: Repository<Prescription>,
     ) { }
 
     // --- Medicines ---
@@ -108,5 +110,34 @@ export class PharmacyService {
         const expiring = await this.getExpiringMedicines(30);
         const lowStock = await this.getLowStockMedicines();
         return { totalMedicines, expiringCount: expiring.length, lowStockCount: lowStock.length };
+    }
+
+    /**
+     * SD3: Dispense by prescription — xuất thuốc theo đơn
+     * Lấy tất cả items trong prescription → dispense từng loại → mark dispensed
+     */
+    async dispenseByPrescription(prescriptionIds: number[]): Promise<{ dispensed: number[]; failed: any[] }> {
+        const dispensed: number[] = [];
+        const failed: any[] = [];
+
+        for (const id of prescriptionIds) {
+            const presc = await this.prescRepo.findOne({ where: { id } });
+            if (!presc || presc.dispensed) continue;
+
+            if (!presc.medicine_id) {
+                failed.push({ id, reason: 'Không có medicine_id' });
+                continue;
+            }
+
+            const success = await this.dispenseMedicine(presc.medicine_id, presc.quantity || 1);
+            if (success) {
+                await this.prescRepo.update(id, { dispensed: true });
+                dispensed.push(id);
+            } else {
+                failed.push({ id, medicine: presc.medicine_name, reason: 'Không đủ tồn kho' });
+            }
+        }
+
+        return { dispensed, failed };
     }
 }

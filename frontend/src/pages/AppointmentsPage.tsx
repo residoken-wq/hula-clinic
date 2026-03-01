@@ -13,11 +13,14 @@ export default function AppointmentsPage() {
     const [selectedDate, setSelectedDate] = useState(dayjs());
     const [patients, setPatients] = useState<any[]>([]);
     const [doctors, setDoctors] = useState<any[]>([]);
+    const [rooms, setRooms] = useState<any[]>([]);
     const [patientSearch, setPatientSearch] = useState('');
     const [form] = Form.useForm();
     const [stats, setStats] = useState<any>({});
 
-    useEffect(() => { load(); loadDoctors(); loadStats(); }, [selectedDate]);
+    useEffect(() => { load(); loadStats(); }, [selectedDate]);
+
+    useEffect(() => { loadDoctors(); loadRooms(); }, []);
 
     const load = async () => {
         setLoading(true);
@@ -30,8 +33,15 @@ export default function AppointmentsPage() {
 
     const loadDoctors = async () => {
         try {
-            const res = await fetchData('/hr/employees', { position: 'Bác sĩ' });
+            const res = await fetchData('/doctors');
             setDoctors(Array.isArray(res) ? res : res.data || []);
+        } catch { }
+    };
+
+    const loadRooms = async () => {
+        try {
+            const res = await fetchData('/rooms');
+            setRooms(Array.isArray(res) ? res : []);
         } catch { }
     };
 
@@ -97,7 +107,8 @@ export default function AppointmentsPage() {
             )
         },
         { title: 'Bác sĩ', width: 150, render: (_: any, r: any) => r.doctor?.full_name || '-' },
-        { title: 'Lý do', dataIndex: 'reason', width: 200, ellipsis: true },
+        { title: 'Phòng', width: 120, render: (_: any, r: any) => r.room ? r.room.name : '-' },
+        { title: 'Lý do', dataIndex: 'reason', width: 180, ellipsis: true },
         {
             title: 'Trạng thái', dataIndex: 'status', width: 120,
             render: (v: string) => <Tag color={statusColors[v]}>{statusLabels[v] || v}</Tag>
@@ -182,6 +193,11 @@ export default function AppointmentsPage() {
                     <Form.Item name="doctor_id" label="Bác sĩ">
                         <Select allowClear placeholder="Chọn bác sĩ">
                             {doctors.map(d => <Option key={d.id} value={d.id}>{d.full_name} - {d.position}</Option>)}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="room_id" label="Phòng khám">
+                        <Select allowClear placeholder="Chọn phòng">
+                            {rooms.filter(r => r.status === 'ACTIVE').map(r => <Option key={r.id} value={r.id}>{r.room_code} - {r.name}</Option>)}
                         </Select>
                     </Form.Item>
                     <Form.Item name="reason" label="Lý do khám">

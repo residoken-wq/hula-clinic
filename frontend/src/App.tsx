@@ -7,6 +7,7 @@ import {
     DollarOutlined, UserOutlined, SettingOutlined,
     LogoutOutlined, BellOutlined, SolutionOutlined,
     ExperimentOutlined, IdcardOutlined, CheckSquareOutlined,
+    HomeOutlined,
 } from '@ant-design/icons';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
@@ -16,6 +17,8 @@ import MedicalRecordsPage from './pages/MedicalRecordsPage';
 import PharmacyPage from './pages/PharmacyPage';
 import ServicesPage from './pages/ServicesPage';
 import BillingPage from './pages/BillingPage';
+import DoctorsPage from './pages/DoctorsPage';
+import RoomsPage from './pages/RoomsPage';
 
 const { Sider, Header, Content } = Layout;
 
@@ -47,6 +50,8 @@ function AppLayout() {
                 { key: '/pharmacy', icon: <MedicineBoxOutlined />, label: 'Kho thuốc' },
                 { key: '/services', icon: <ExperimentOutlined />, label: 'Dịch vụ' },
                 { key: '/billing', icon: <DollarOutlined />, label: 'Thanh toán' },
+                { key: '/doctors', icon: <SolutionOutlined />, label: 'Bác sĩ' },
+                { key: '/rooms', icon: <HomeOutlined />, label: 'Phòng khám' },
             ]
         },
         {
@@ -132,6 +137,8 @@ function AppLayout() {
                         <Route path="/pharmacy" element={<PharmacyPage />} />
                         <Route path="/services" element={<ServicesPage />} />
                         <Route path="/billing" element={<BillingPage />} />
+                        <Route path="/doctors" element={<DoctorsPage />} />
+                        <Route path="/rooms" element={<RoomsPage />} />
                         <Route path="/finance" element={<PlaceholderPage title="Tài chính" icon="📊" />} />
                         <Route path="/hr" element={<PlaceholderPage title="Nhân sự" icon="👔" />} />
                         <Route path="/tasks" element={<PlaceholderPage title="Công việc" icon="✅" />} />
