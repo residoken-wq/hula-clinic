@@ -137,7 +137,7 @@ export class AppointmentsService {
                 status: 'DRAFT',
                 symptoms: appt.reason || '',
             } as any);
-            const record = await this.recordRepo.save(newRecord) as MedicalRecord;
+            const record = await this.recordRepo.save(newRecord) as unknown as MedicalRecord;
 
             await this.repo.update(id, { medical_record_id: record.id });
         }
