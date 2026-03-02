@@ -129,14 +129,15 @@ export class AppointmentsService {
         // Auto-create draft MedicalRecord if not exists
         if (!appt.medical_record_id) {
             const recordCount = await this.recordRepo.count();
-            const record = await this.recordRepo.save(this.recordRepo.create({
+            const newRecord = this.recordRepo.create({
                 record_code: `BA-${String(recordCount + 1).padStart(6, '0')}`,
                 patient_id: appt.patient_id,
                 doctor_id: appt.doctor_id,
                 visit_date: new Date(),
                 status: 'DRAFT',
                 symptoms: appt.reason || '',
-            } as any));
+            } as any);
+            const record = await this.recordRepo.save(newRecord) as MedicalRecord;
 
             await this.repo.update(id, { medical_record_id: record.id });
         }
