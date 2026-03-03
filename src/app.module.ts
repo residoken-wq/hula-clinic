@@ -36,6 +36,8 @@ import { Employee } from './core/hr/entities/employee.entity';
 import { Attendance } from './core/hr/entities/attendance.entity';
 import { LeaveRequest } from './core/hr/entities/leave-request.entity';
 import { WorkShift } from './core/hr/entities/work-shift.entity';
+import { Payroll } from './core/hr/entities/payroll.entity';
+import { EmployeeAsset } from './core/hr/entities/employee-asset.entity';
 import { Task } from './core/tasks/task.entity';
 
 // --- Clinic Modules (loaded when INDUSTRY_TYPE=clinic) ---
@@ -70,7 +72,7 @@ const ALL_ENTITIES = [
     Notification,
     SystemConfig, ActivityLog,
     Transaction, TransactionCategory,
-    Employee, Attendance, LeaveRequest, WorkShift,
+    Employee, Attendance, LeaveRequest, WorkShift, Payroll, EmployeeAsset,
     Task,
     // Clinic
     Patient,

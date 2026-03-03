@@ -1,6 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { EncryptedColumnTransformer } from '../../../common/encryption/encrypted-column.transformer';
+import { Attendance } from './attendance.entity';
+import { LeaveRequest } from './leave-request.entity';
+import { Payroll } from './payroll.entity';
+import { EmployeeAsset } from './employee-asset.entity';
 
 @Entity('employees')
 export class Employee {
@@ -52,12 +56,36 @@ export class Employee {
     @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     bank_account: string;
 
+    @Column({ nullable: true })
+    bank_name: string;
+
+    @Column({ nullable: true })
+    tax_code: string;
+
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
+    insurance_number: string;
+
+    @Column({ nullable: true })
+    avatar: string;
+
     @ManyToOne(() => User, { nullable: true })
     @JoinColumn({ name: 'user_id' })
     user: User;
 
     @Column({ nullable: true })
     user_id: number;
+
+    @OneToMany(() => Attendance, att => att.employee)
+    attendances: Attendance[];
+
+    @OneToMany(() => LeaveRequest, lr => lr.employee)
+    leaveRequests: LeaveRequest[];
+
+    @OneToMany(() => Payroll, p => p.employee)
+    payrolls: Payroll[];
+
+    @OneToMany(() => EmployeeAsset, a => a.employee)
+    assets: EmployeeAsset[];
 
     @CreateDateColumn()
     created_at: Date;
