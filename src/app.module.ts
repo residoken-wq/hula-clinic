@@ -30,6 +30,7 @@ import { FeatureFlag } from './core/feature-flags/feature-flag.entity';
 import { Notification } from './core/notifications/notification.entity';
 import { SystemConfig } from './core/system/system-config.entity';
 import { ActivityLog } from './core/system/entities/activity-log.entity';
+import { ModuleCategory } from './core/system/entities/module-category.entity';
 import { Transaction } from './core/finance/transaction.entity';
 import { TransactionCategory } from './core/finance/transaction-category.entity';
 import { Employee } from './core/hr/entities/employee.entity';
@@ -70,7 +71,7 @@ const ALL_ENTITIES = [
     User, UserGroup, GroupPermission,
     FeatureFlag,
     Notification,
-    SystemConfig, ActivityLog,
+    SystemConfig, ActivityLog, ModuleCategory,
     Transaction, TransactionCategory,
     Employee, Attendance, LeaveRequest, WorkShift, Payroll, EmployeeAsset,
     Task,

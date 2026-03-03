@@ -72,6 +72,20 @@ export class UsersService {
         return this.groupRepo.save(group);
     }
 
+    async updateGroup(id: number, data: any): Promise<UserGroup> {
+        await this.groupRepo.update(id, { name: data.name, description: data.description });
+        return this.getGroupDetail(id);
+    }
+
+    async deleteGroup(id: number) {
+        // Remove permissions first
+        await this.permRepo.delete({ group_id: id });
+        // Unlink users from this group
+        await this.userRepo.createQueryBuilder().update().set({ group_id: null as any }).where('group_id = :id', { id }).execute();
+        await this.groupRepo.delete(id);
+        return { success: true };
+    }
+
     async updateGroupPermissions(groupId: number, permissions: any[]) {
         await this.permRepo.delete({ group_id: groupId });
         const perms = permissions.map(p => this.permRepo.create({ ...p, group_id: groupId } as Partial<GroupPermission>));

@@ -41,4 +41,14 @@ export class UsersController {
     updateGroupPermissions(@Param('id') id: number, @Body() body: { permissions: any[] }) {
         return this.usersService.updateGroupPermissions(id, body.permissions);
     }
+
+    @Put('groups/:id')
+    updateGroup(@Param('id') id: number, @Body() data: any) {
+        return this.usersService.updateGroup(id, data);
+    }
+
+    @Delete('groups/:id')
+    deleteGroup(@Param('id') id: number) {
+        return this.usersService.deleteGroup(id);
+    }
 }

@@ -20,6 +20,7 @@ import BillingPage from './pages/BillingPage';
 import DoctorsPage from './pages/DoctorsPage';
 import RoomsPage from './pages/RoomsPage';
 import HrPage from './pages/HrPage';
+import SettingsPage from './pages/SettingsPage';
 
 const { Sider, Header, Content } = Layout;
 
@@ -143,8 +144,8 @@ function AppLayout() {
                         <Route path="/finance" element={<PlaceholderPage title="Tài chính" icon="📊" />} />
                         <Route path="/hr" element={<HrPage />} />
                         <Route path="/tasks" element={<PlaceholderPage title="Công việc" icon="✅" />} />
-                        <Route path="/users" element={<PlaceholderPage title="Tài khoản" icon="🔐" />} />
-                        <Route path="/settings" element={<PlaceholderPage title="Cài đặt" icon="⚙️" />} />
+                        <Route path="/users" element={<SettingsPage defaultTab="users" />} />
+                        <Route path="/settings" element={<SettingsPage />} />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </Content>
