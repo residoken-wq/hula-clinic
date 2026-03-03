@@ -44,7 +44,7 @@ export default function PayrollTab({ onUpdate }: { onUpdate: () => void }) {
             form.setFieldsValue(item);
         } else {
             form.resetFields();
-            form.setFieldsValues({ month, status: 'DRAFT' });
+            form.setFieldsValue({ month, status: 'DRAFT' });
         }
         setModalOpen(true);
     };
