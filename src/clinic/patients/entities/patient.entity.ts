@@ -9,7 +9,7 @@ export class Patient {
     @Column({ unique: true })
     patient_code: string;
 
-    @Column()
+    @Column({ transformer: EncryptedColumnTransformer })
     full_name: string;
 
     @Column({ type: 'date', nullable: true })
@@ -48,7 +48,7 @@ export class Patient {
     @Column({ type: 'date', nullable: true })
     insurance_expiry: Date;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, transformer: EncryptedColumnTransformer })
     emergency_contact_name: string;
 
     @Column({ nullable: true, transformer: EncryptedColumnTransformer })

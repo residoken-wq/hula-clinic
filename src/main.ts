@@ -43,6 +43,13 @@ async function bootstrap() {
             credentials: true,
         });
 
+        // Global API Transport Encryption
+        const { EncryptionInterceptor } = await import('./common/interceptors/encryption.interceptor');
+        const { EncryptionService } = await import('./common/encryption/encryption.service');
+        const encService = app.get(EncryptionService);
+        app.useGlobalInterceptors(new EncryptionInterceptor(encService));
+        console.log('🔐 API Transport Encryption enabled');
+
         const port = process.env.PORT || 3000;
         await app.listen(port, '0.0.0.0');
         console.log(`🏥 Hula Clinic ERP is running on: ${await app.getUrl()}`);
