@@ -1,0 +1,24 @@
+# Environment files (exclude all except .env.example)
+.env
+.env.*
+!.env.example
+
+# Dependencies and build outputs
+node_modules
+dist
+
+# Media and sub-projects
+uploads
+frontend
+
+# Git and CI/CD
+.git
+.github
+
+# Documentation and deployment
+antigravity
+deploy
+
+# Logs and backups
+*.log
+*.bk
