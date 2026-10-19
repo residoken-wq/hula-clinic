@@ -4,6 +4,7 @@
 - Rule 1: KHÔNG tạo/sửa `docker-compose.yml` ở root repo. Ngoại lệ (chốt 2026-10-19): cấu hình chạy production trên VPS đặt trong thư mục `deploy/` (`docker-compose.prod.yml`, `.env.production.example`, `deploy.sh`) và CHỈ pull image từ GHCR, không build. Không bao giờ commit file `.env` thật.
 - Rule 2: Mọi cấu hình chạy Docker local nằm trong file `docker-compose.local.yml`.
 - Rule 3: Luôn chạy quét mã độc/lỗ hổng thư viện trước khi commit.
+- Rule 4: Mọi lệnh `docker` / `docker compose` chạy trong WSL2 Ubuntu (máy Windows không có Docker daemon). Không có Docker thì dừng và báo lại, không đánh dấu tiêu chí liên quan là đạt.
 ## 1. Tự động tách Components
 
 ### Ngưỡng

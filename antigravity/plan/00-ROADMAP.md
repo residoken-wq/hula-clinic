@@ -25,19 +25,35 @@ P2 và P3 có thể làm song song sau khi P1 xong.
 
 ## 3. Cách giao việc cho Antigravity
 - Mỗi task có ID (`CICD-01`, `SEC-03`, `FLOW-05`…). **Mỗi lần chỉ giao 1 task (hoặc 1 nhóm nhỏ cùng file)**, mỗi task = 1 commit, mỗi phase = 1 PR.
-- Prompt mẫu:
+- Prompt mẫu (bản 2 — 2026-10-19, thêm Docker trong WSL2 và quy tắc git):
 
 ```
 Đọc antigravity/rules.md, antigravity/architecture.md và antigravity/plan/00-ROADMAP.md.
 Thực hiện task <ID> trong antigravity/plan/tasks/<file>.md.
+
+[Git]
+- Làm trên branch claude/hopeful-hypatia-8b36i7. Chạy `git pull --rebase` TRƯỚC khi bắt đầu và TRƯỚC khi push.
+- Commit code + báo cáo trong cùng 1 commit, message "<ID>: <mô tả ngắn>". Không push thẳng main.
+- Chưa push lên remote = chưa xong.
+
+[Phạm vi]
 - Chỉ sửa các file được liệt kê trong task; cần sửa thêm file khác thì dừng lại và hỏi.
+- Làm đúng từng chữ của spec. Muốn làm khác (kể cả "tốt hơn") thì ghi vào mục 6 của báo cáo và hỏi trước.
 - Không đọc/ghi file .env thật; secret dùng placeholder CHANGE_ME.
-- Chạy đủ các lệnh trong mục "Kiểm tra" / "Nghiệm thu" và dán kết quả.
-- Ghi lại thời điểm bắt đầu và kết thúc (giờ VN, +07).
-- Khi xong: tạo antigravity/plan/reports/<ID>.md theo antigravity/plan/REPORT-TEMPLATE.md,
-  cập nhật dòng <ID> trong antigravity/plan/PROGRESS.md (trạng thái 🟡 chờ QA).
-- Commit code + báo cáo trong cùng 1 commit, message "<ID>: <mô tả ngắn>".
-- PUSH lên branch phase (vd. feat/p1-cicd), KHÔNG push thẳng main. Chưa push = chưa xong.
+
+[Docker — bắt buộc chạy trong WSL2]
+- Mọi lệnh docker / docker compose chạy trong WSL2 Ubuntu: mở terminal WSL tại thư mục repo,
+  hoặc từ Windows gọi `wsl -e bash -lc "cd <đường dẫn repo trong WSL> && <lệnh>"`.
+- Trước khi bắt đầu, chạy `docker version` trong WSL. Không có "Server:" thì DỪNG và báo lại, không bỏ qua bước kiểm tra.
+- Task có build/chạy image: tự chạy hết lệnh trong mục "Nghiệm thu" (docker build, docker run, docker inspect,
+  docker image ls để ghi size) và dán output thật vào báo cáo.
+
+[Kiểm tra & báo cáo]
+- Chạy đủ DoD: `npx tsc --noEmit` và `npm run build` ở root và frontend/.
+- Ghi thời điểm nhận task, bắt đầu, push xong (giờ VN, +07).
+- Tạo antigravity/plan/reports/<ID>.md theo antigravity/plan/REPORT-TEMPLATE.md; cập nhật dòng <ID> trong PROGRESS.md sang 🟡 chờ QA.
+- Mục 5 của báo cáo: chỉ ghi ✅ khi đã TỰ CHẠY lệnh và có output; cột Bằng chứng dẫn đúng dòng code hoặc output.
+  Tiêu chí không tự kiểm được thì ghi ⚠️ kèm lý do. Ghi ✅ sai = lỗi báo cáo.
 ```
 
 **Luồng một task:** ⬜ → 🔄 (Antigravity làm) → 🟡 (đã push + có báo cáo) → QA (Claude Code đọc commit + báo cáo, chạy lại lệnh kiểm tra) → ✅ / ❌ (ghi vào `PROGRESS.md` §Nhật ký QA và mục 8 của báo cáo).
@@ -67,3 +83,5 @@ Thực hiện task <ID> trong antigravity/plan/tasks/<file>.md.
 | Q1 | Compose production đặt ở đâu? | **`deploy/` trong repo này.** VPS chỉ cần lấy thư mục `deploy/`. Repo `hula-clinic-infra` không còn dùng cho luồng deploy mới. `rules.md` Rule 1 đã cập nhật theo. |
 | Q2 | Network `nexus-network` | **Bỏ.** Chỉ dùng `proxy_net` (Nginx Proxy Manager). |
 | Q3 | Visibility package GHCR | **Public.** VPS `docker pull` không cần login. |
+| Q4 | Antigravity chạy Docker ở đâu? | **Trong WSL2** (máy Windows không có Docker daemon). Antigravity tự build/chạy image để nghiệm thu; QA chỉ chạy lại để kiểm chứng. Đã đưa vào prompt mẫu bản 2 (§3). |
+| Q5 | Branch làm việc | Tạm dùng chung `claude/hopeful-hypatia-8b36i7` với `git pull --rebase` (theo thực tế đang làm). |
