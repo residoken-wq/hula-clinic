@@ -9,7 +9,7 @@
 |---|---|---|---|---|---|---|---|---|---|
 | CICD-01 | Lockfile & Node | 0h30 | ✅ QA pass | ~16:16 | ~16:21 | ~0h05 | 680ee1a | [reports/CICD-01.md](reports/CICD-01.md) | ✅ 16:58 (2 ghi chú) |
 | CICD-02 | `.dockerignore` | 0h15 | ✅ QA pass | 17:01 | 17:07 | 0h06 | 4f5a515 | [reports/CICD-02.md](reports/CICD-02.md) | ✅ 17:24 (2 ghi chú) |
-| CICD-03 | Dockerfile backend | 1h | ⬜ | | | | | | |
+| CICD-03 | Dockerfile backend | 1h | 🟡 chờ QA | 17:33 | 17:36 | 0h05 | | [reports/CICD-03.md](reports/CICD-03.md) | |
 | CICD-04 | Dockerfile frontend | 0h30 | ⬜ | | | | | | |
 | CICD-05 | `/api/health` | 0h45 | ⬜ | | | | | | |
 | CICD-06 | Cấu hình production an toàn | 1h | ⬜ | | | | | | |
