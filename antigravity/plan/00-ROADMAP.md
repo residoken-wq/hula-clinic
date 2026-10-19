@@ -55,7 +55,9 @@ Thực hiện task <ID> trong antigravity/plan/tasks/<file>.md.
 | D5 | Auto-deploy qua SSH chuyển thành **tùy chọn (opt-in)**, mặc định tắt | Chủ dự án muốn tự pull trên VPS |
 | D6 | Demo vẫn dùng `synchronize: true` qua biến `DB_SYNCHRONIZE`; migrations để sau (P4) | Giảm rủi ro cho demo |
 
-## 6. Câu hỏi cần chủ dự án trả lời trước P1
-- **Q1** — `rules.md` Rule 1 ghi "repo này chỉ chứa source code" và có repo `hula-clinic-infra` (private) chứa `deploy.sh`. Plan mặc định đặt compose production ở `deploy/` **trong repo này** để VPS chỉ cần pull. Đồng ý không, hay giữ trong repo infra?
-- **Q2** — Network `nexus-network` (trong `docker-compose.yml.bk`) còn cần cho demo không? Plan mặc định **bỏ**, chỉ giữ `proxy_net`.
-- **Q3** — Package GHCR để **public** (VPS pull không cần login) hay private (VPS cần `docker login ghcr.io` bằng PAT `read:packages`)?
+## 6. Quyết định của chủ dự án (chốt ngày 2026-10-19)
+| # | Câu hỏi | Quyết định |
+|---|---|---|
+| Q1 | Compose production đặt ở đâu? | **`deploy/` trong repo này.** VPS chỉ cần lấy thư mục `deploy/`. Repo `hula-clinic-infra` không còn dùng cho luồng deploy mới. `rules.md` Rule 1 đã cập nhật theo. |
+| Q2 | Network `nexus-network` | **Bỏ.** Chỉ dùng `proxy_net` (Nginx Proxy Manager). |
+| Q3 | Visibility package GHCR | **Public.** VPS `docker pull` không cần login. |

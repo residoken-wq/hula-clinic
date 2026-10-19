@@ -102,19 +102,20 @@ Internet ─▶ Nginx Proxy Manager (SSL) ─▶ clinic_frontend:80 ─▶ /api 
 - Job `deploy` (tùy chọn): `if: vars.AUTO_DEPLOY == 'true' && github.ref == 'refs/heads/main'`, `environment: production`, `appleboy/ssh-action` (pin phiên bản ổn định mới nhất, **kiểm tra trên GitHub Marketplace**), script: `cd ${{ vars.VPS_DEPLOY_DIR || '/opt/hula-clinic' }} && ./deploy.sh sha-<7 ký tự đầu của github.sha>`.
 
 **Nghiệm thu:**
+- Image chỉ chứa code đã build và **không có secret nào** (image public, ai cũng pull về được).
 - Merge vào `main` → GHCR có `…-api:latest`, `…-api:sha-xxxxxxx`, và tương tự cho frontend.
 - Push tag `v0.1.0` → có thêm `0.1.0` và `0.1`.
 - Không đặt `AUTO_DEPLOY` → job deploy hiện "skipped".
 
 ## CICD-09 — Bộ file deploy cho VPS
-**Files (mới):** `deploy/docker-compose.prod.yml`, `deploy/.env.production.example`, `deploy/deploy.sh` (chmod +x). *(Chờ Q1 trong ROADMAP; nếu chủ dự án chọn repo infra thì chuyển 3 file sang đó.)*
+**Files (mới):** `deploy/docker-compose.prod.yml`, `deploy/.env.production.example`, `deploy/deploy.sh` (chmod +x). *(Q1 đã chốt: đặt trong repo này.)*
 
 `docker-compose.prod.yml`:
 - `name: hula-clinic`. **Không có `build:`**; chỉ dùng `image:`.
 - `db`: `postgres:15-alpine`, `container_name: clinic_db`, `POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}`, port `127.0.0.1:5433:5432` (không public), volume `clinic_postgres_data`, healthcheck `pg_isready`.
 - `app`: `image: ${REGISTRY:-ghcr.io}/${IMAGE_NAMESPACE:-residoken-wq/hula-clinic}-api:${IMAGE_TAG:-latest}`, `container_name: clinic_app` (**bắt buộc giữ tên này**, `frontend/nginx.conf` proxy tới `clinic_app:3000`), `env_file: .env`, environment `NODE_ENV=production`, `DB_HOST=db`, `DB_PORT=5432`, `APP_VERSION=${IMAGE_TAG}`, volume `clinic_uploads:/app/uploads`, `depends_on db: service_healthy`, **không publish port**.
 - `frontend`: image tương ứng, `container_name: clinic_frontend`, `depends_on app: service_healthy`, networks `default` + `proxy_net`.
-- `networks.proxy_net.external: true`. Bỏ `nexus-network` (chờ Q2).
+- `networks.proxy_net.external: true`. **Không** khai báo `nexus-network` (Q2 đã chốt bỏ).
 - `restart: unless-stopped` cho cả 3 service.
 
 `.env.production.example`: chỉ placeholder `CHANGE_ME`, có comment `openssl rand -hex 32`. Biến: `IMAGE_NAMESPACE`, `IMAGE_TAG`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`, `DB_SYNCHRONIZE=true`, `JWT_SECRET`, `JWT_EXPIRES_IN=1d`, `ADMIN_INITIAL_PASSWORD`, `ENCRYPTION_KEY` (64 hex, ghi chú "mất khóa = mất dữ liệu đã mã hóa"), `API_ENCRYPTION_KEY` (ghi chú phải trùng `VITE_API_ENCRYPTION_KEY`, là giá trị public), `PORT=3000`.
@@ -133,7 +134,7 @@ Internet ─▶ Nginx Proxy Manager (SSL) ─▶ clinic_frontend:80 ─▶ /api 
 
 `DEPLOYMENT.md` gồm:
 1. **Chuẩn bị VPS lần đầu**: cài Docker + compose plugin; `mkdir /opt/hula-clinic`; tải 3 file trong `deploy/` (bằng `curl` từ raw GitHub hoặc `git clone --depth 1` rồi copy); `cp .env.production.example .env && chmod 600 .env` rồi chủ dự án **tự điền** secret.
-2. GHCR private (Q3): `docker login ghcr.io -u <user>` với PAT quyền `read:packages`.
+2. **GHCR public (Q3):** sau lần release đầu tiên, vào GitHub → Profile/Org → Packages → `hula-clinic-api` → Package settings → *Change visibility* → **Public**; làm tương tự với `hula-clinic-frontend`. Ở mục *Manage Actions access* của mỗi package, kiểm tra repo `hula-clinic` có quyền **Write**. Kiểm tra trên VPS: `docker logout ghcr.io && docker pull ghcr.io/residoken-wq/hula-clinic-api:latest` phải thành công. (Đường dẫn menu theo giao diện GitHub hiện tại, **cần đối chiếu** tài liệu GitHub Packages nếu giao diện đổi.)
 3. **Nginx Proxy Manager**: Proxy Host `clinic.nemmamnon.com` → scheme `http`, host `clinic_frontend`, port `80`; bật Block Common Exploits và Websockets; tab SSL: Let's Encrypt, Force SSL, HTTP/2, HSTS.
 4. **Deploy**: `./deploy.sh` (latest) hoặc `./deploy.sh sha-abc1234`.
 5. **Rollback**: `./deploy.sh <sha hoặc version cũ>`.

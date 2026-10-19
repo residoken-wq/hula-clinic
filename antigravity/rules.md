@@ -1,7 +1,7 @@
 # Rules — Quy tắc phát triển
 - Environment: Docker Compose inside WSL2 (Ubuntu).
 - User: ntnhan (Non-root).
-- Rule 1: KHÔNG sửa trực tiếp docker-compose.yml ở repo này (repo này chỉ chứa source code).
+- Rule 1: KHÔNG tạo/sửa `docker-compose.yml` ở root repo. Ngoại lệ (chốt 2026-10-19): cấu hình chạy production trên VPS đặt trong thư mục `deploy/` (`docker-compose.prod.yml`, `.env.production.example`, `deploy.sh`) và CHỈ pull image từ GHCR, không build. Không bao giờ commit file `.env` thật.
 - Rule 2: Mọi cấu hình chạy Docker local nằm trong file `docker-compose.local.yml`.
 - Rule 3: Luôn chạy quét mã độc/lỗ hổng thư viện trước khi commit.
 ## 1. Tự động tách Components
