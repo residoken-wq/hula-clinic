@@ -1,7 +1,7 @@
 # Bảng theo dõi tiến độ
 
 > Antigravity cập nhật cột *Bắt đầu → Thực tế* khi xong task; QA cập nhật cột *QA*.
-> Trạng thái: ⬜ chưa làm · 🔄 đang làm · 🟡 chờ QA · ✅ QA pass · ❌ QA fail
+> Trạng thái: ⬜ chưa làm · 🔄 đang làm · 🟡 chờ QA · ✅ QA pass · ⚠️ pass có điều kiện (phải sửa trước khi merge `main`) · ❌ QA fail
 > Thời gian theo giờ VN (+07). Ước lượng là **giả định** của BA, dùng để so với thực tế.
 
 ## P1 — CI/CD & Deploy
@@ -9,7 +9,7 @@
 |---|---|---|---|---|---|---|---|---|---|
 | CICD-01 | Lockfile & Node | 0h30 | ✅ QA pass | ~16:16 | ~16:21 | ~0h05 | 680ee1a | [reports/CICD-01.md](reports/CICD-01.md) | ✅ 16:58 (2 ghi chú) |
 | CICD-02 | `.dockerignore` | 0h15 | ✅ QA pass | 17:01 | 17:07 | 0h06 | 4f5a515 | [reports/CICD-02.md](reports/CICD-02.md) | ✅ 17:24 (2 ghi chú) |
-| CICD-03 | Dockerfile backend | 1h | 🟡 chờ QA | 17:33 | 17:36 | 0h05 | | [reports/CICD-03.md](reports/CICD-03.md) | |
+| CICD-03 | Dockerfile backend | 1h | ⚠️ Sửa QA-03-1 | 17:33 | 17:36 | 0h05 | 6e52000 | [reports/CICD-03.md](reports/CICD-03.md) | ⚠️ 17:48 — QA-03-1 (chown → image +179MB) |
 | CICD-04 | Dockerfile frontend | 0h30 | ⬜ | | | | | | |
 | CICD-05 | `/api/health` | 0h45 | ⬜ | | | | | | |
 | CICD-06 | Cấu hình production an toàn | 1h | ⬜ | | | | | | |
@@ -52,3 +52,4 @@
 | 2026-10-19 | CICD-01 | ❌ Chưa nghiệm thu được | Remote `origin` chỉ có `main` (`5dbae93`) và `claude/hopeful-hypatia-8b36i7` (2 commit docs). Không có `package-lock.json`, không có commit `CICD-01:`. Cần push code + báo cáo `reports/CICD-01.md` |
 | 2026-10-19 16:58 | CICD-01 | ✅ PASS | 6/6 checklist đạt trên clone sạch `f005545`. Ghi chú N1 (giờ push), N2 (audit: prod BE 5 high = baseline, không phát sinh mới). Chi tiết: reports/CICD-01.md §8 |
 | 2026-10-19 17:24 | CICD-02 | ✅ PASS | Build context root + frontend không chứa `.env*`, `node_modules`, `dist`, `uploads`, log (probe + Dockerfile thật stage development). N1: hash commit sai (`bd49172` → `4f5a515`). N2: máy dev không có Docker → cần Docker trong WSL2 cho CICD-03/04/09 |
+| 2026-10-19 17:48 | CICD-03 | ⚠️ PASS có điều kiện | Build, user `node`, healthcheck, smoke boot, stage dev đều đạt. **QA-03-1**: `chown -R /app` thay vì `/app/uploads` → image 598MB (đúng spec 419MB), user app ghi được `dist/`. Sửa 1 dòng trước khi merge. QA-03-2: báo cáo ghi ✅ sai |
