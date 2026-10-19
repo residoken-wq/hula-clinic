@@ -55,6 +55,27 @@ Internet ─▶ Nginx Proxy Manager (SSL) ─▶ clinic_frontend:80 ─▶ /api 
 
 **Nghiệm thu:** `docker build --target production -t hula-fe:test ./frontend` thành công.
 
+## CICD-04b — nginx phân giải lại `clinic_app` khi chạy (thêm sau QA CICD-04)
+**File:** `frontend/nginx.conf`
+**Lý do (QA-04-1):** nginx chỉ phân giải `clinic_app` một lần lúc khởi động, nên:
+- Backend chưa lên → frontend crash (`[emerg] host not found in upstream "clinic_app"`).
+- Backend bị tạo lại (deploy image api mới, IP đổi) → `/api` trả **502** cho tới khi restart frontend.
+
+**Yêu cầu:**
+- Trong `server { }` thêm `resolver 127.0.0.11 valid=10s ipv6=off;` (DNS nội bộ của Docker).
+- `location /api` và `location /uploads`: thay `proxy_pass http://clinic_app:3000;` bằng
+  ```nginx
+  set $backend http://clinic_app:3000;
+  proxy_pass $backend;
+  ```
+  (proxy_pass dùng biến và không có URI thì nginx giữ nguyên request URI → đường dẫn `/api/...` không đổi. Kiểm lại theo tài liệu nginx `ngx_http_proxy_module`.)
+- Giữ nguyên các header và timeout hiện có. Không sửa file nào khác.
+
+**Nghiệm thu (Docker trong WSL2 hoặc QA chạy):**
+1. Chạy frontend **không có** container `clinic_app` → nginx vẫn chạy, `/` trả trang SPA, `/api/health` trả 502 (không crash).
+2. Tạo network, chạy mock `clinic_app` (port 3000) + frontend → `/api/health` trả JSON của mock.
+3. Xóa rồi tạo lại `clinic_app` (IP mới), đợi 10 giây → `/api/health` trả JSON, **không phải 502**, không cần restart frontend.
+
 ## CICD-05 — Endpoint `GET /api/health`
 **Files:** `src/core/health/health.controller.ts`, `src/core/health/health.module.ts` (mới), `src/app.module.ts`
 - Endpoint public (không gắn `JwtAuthGuard`); chạy `SELECT 1` qua `DataSource`.

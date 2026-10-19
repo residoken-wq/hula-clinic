@@ -10,7 +10,8 @@
 | CICD-01 | Lockfile & Node | 0h30 | ✅ QA pass | ~16:16 | ~16:21 | ~0h05 | 680ee1a | [reports/CICD-01.md](reports/CICD-01.md) | ✅ 16:58 (2 ghi chú) |
 | CICD-02 | `.dockerignore` | 0h15 | ✅ QA pass | 17:01 | 17:07 | 0h06 | 4f5a515 | [reports/CICD-02.md](reports/CICD-02.md) | ✅ 17:24 (2 ghi chú) |
 | CICD-03 | Dockerfile backend | 1h | ✅ QA pass | 17:33 | 19:22 | 0h10 (gồm 1 lần sửa) | 6e52000, 4c03bf5 | [reports/CICD-03.md](reports/CICD-03.md) | ✅ 19:39 (lần 2) |
-| CICD-04 | Dockerfile frontend | 0h30 | 🟡 chờ QA | 21:10 | 21:18 | 0h08 | | [reports/CICD-04.md](reports/CICD-04.md) | |
+| CICD-04 | Dockerfile frontend | 0h30 | ✅ QA pass | 21:10 | 21:18 | 0h08 | f2a08fe | [reports/CICD-04.md](reports/CICD-04.md) | ✅ 21:22 (phát hiện QA-04-1 → CICD-04b) |
+| CICD-04b | nginx resolver động cho `clinic_app` (QA-04-1) | 0h20 | ⬜ | | | | | | |
 | CICD-05 | `/api/health` | 0h45 | ⬜ | | | | | | |
 | CICD-06 | Cấu hình production an toàn | 1h | ⬜ | | | | | | |
 | CICD-07 | Workflow CI | 1h | ⬜ | | | | | | |
@@ -54,3 +55,4 @@
 | 2026-10-19 17:24 | CICD-02 | ✅ PASS | Build context root + frontend không chứa `.env*`, `node_modules`, `dist`, `uploads`, log (probe + Dockerfile thật stage development). N1: hash commit sai (`bd49172` → `4f5a515`). N2: máy dev không có Docker → cần Docker trong WSL2 cho CICD-03/04/09 |
 | 2026-10-19 17:48 | CICD-03 | ⚠️ PASS có điều kiện | Build, user `node`, healthcheck, smoke boot, stage dev đều đạt. **QA-03-1**: `chown -R /app` thay vì `/app/uploads` → image 598MB (đúng spec 419MB), user app ghi được `dist/`. Sửa 1 dòng trước khi merge. QA-03-2: báo cáo ghi ✅ sai |
 | 2026-10-19 19:39 | CICD-03 | ✅ PASS (lần 2) | QA-03-1 đã sửa (`4c03bf5`): image 598→419 MB, `dist/` + `node_modules/` read-only, `uploads/` ghi được, smoke boot OK. QA-03-2 (báo cáo) đã sửa |
+| 2026-10-19 21:22 | CICD-04 | ✅ PASS | Build có/không build-arg OK (75.4 MB), key nhúng đúng, không lộ vào ENV/history, healthy, SPA + proxy `/api` OK. **QA-04-1** (có từ trước): nginx không re-resolve `clinic_app` → crash khi backend chưa lên, 502 sau khi backend tạo lại → thêm task CICD-04b |

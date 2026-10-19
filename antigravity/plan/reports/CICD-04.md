@@ -121,7 +121,31 @@ dist/assets/index-Crh0xvRN.js   1,329.52 kB │ gzip: 413.35 kB
 ## 8. QA (QA điền)
 | Mục | Giá trị |
 |---|---|
-| QA thực hiện lúc | |
-| Kết luận | |
-| Lỗi tìm thấy | |
-| Thời gian QA | |
+| QA thực hiện lúc | 2026-10-19 21:22 (+07) — Claude Code, clone sạch `f2a08fe`, Docker 29.8.2 |
+| Kết luận | ✅ **PASS** cho phạm vi CICD-04. Phát hiện thêm QA-04-1 (lỗi có sẵn trong `nginx.conf`, ngoài phạm vi) → tạo task **CICD-04b** |
+| Lỗi tìm thấy | QA-04-1 (High cho deploy, có từ trước) |
+| Thời gian QA | ~0h15 |
+
+### Kết quả kiểm tra
+| # | Kiểm tra | Kết quả | Bằng chứng |
+|---|---|---|---|
+| 1 | `docker build --target production` (không build-arg / có build-arg) | ✅ | Cả 2 build OK, image **75.4 MB** |
+| 2 | Có `--build-arg VITE_API_ENCRYPTION_KEY=qa-marker-7f3a91` → giá trị nằm trong bundle | ✅ | marker có trong `assets/*.js`; chuỗi khóa dev không còn |
+| 3 | Không build-arg → dùng khóa dev mặc định | ✅ | Chuỗi khóa dev có trong bundle, marker không có |
+| 4 | Giá trị build-arg không lọt vào ENV/history của image production | ✅ | Không có `VITE_*` trong `Config.Env`; history không chứa marker |
+| 5 | `nginx:1.27-alpine` | ✅ | `nginx/1.27.5` |
+| 6 | HEALTHCHECK | ✅ | `wget -qO- http://127.0.0.1/`, interval 30s, timeout 5s, start 10s, retries 3 → trạng thái **healthy** |
+| 7 | Chạy thật với mock `clinic_app` | ✅ | `/` → title "Hula Clinic ERP…"; `/patients` → fallback `index.html`; `/api/health` → proxy tới mock OK; `/assets/*` có `Cache-Control: public, immutable` |
+| 8 | Báo cáo trung thực | ✅ | Tiêu chí 6 ghi ⚠️ đúng quy định (máy dev tắt VT-x) |
+
+### QA-04-1 — nginx không phân giải lại `clinic_app` (High cho deploy, có từ trước, ngoài phạm vi CICD-04)
+| Tình huống | Kết quả QA đo |
+|---|---|
+| Chạy frontend khi chưa có `clinic_app` | Container **Exited (1)**: `[emerg] host not found in upstream "clinic_app"` |
+| Tạo lại `clinic_app` (IP đổi) khi frontend đang chạy | `/api/health` → **502 Bad Gateway** cho tới khi restart frontend |
+
+→ Mỗi lần `deploy.sh` chỉ đổi image api, `docker compose up -d` tạo lại `clinic_app` nhưng không tạo lại frontend → **demo lỗi 502 sau deploy**. Đã thêm task **CICD-04b** vào `tasks/01-cicd-deploy.md` (làm trước CICD-09).
+
+### Ghi chú
+- Tiêu chí 5 của Antigravity (grep key trong `dist`) chạy trên build ở host, không qua `docker build --build-arg`. QA đã kiểm lại qua Docker (dòng 2–4).
+- Comment trong Dockerfile ghi "Public key dung cho…": nội dung đúng (giá trị public). Nit: viết không dấu, khác phần còn lại của repo.
