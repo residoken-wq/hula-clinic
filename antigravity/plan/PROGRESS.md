@@ -7,7 +7,7 @@
 ## P1 — CI/CD & Deploy
 | ID | Task | Ước lượng | Trạng thái | Bắt đầu | Hoàn thành | Thực tế | Commit | Báo cáo | QA |
 |---|---|---|---|---|---|---|---|---|---|
-| CICD-01 | Lockfile & Node | 0h30 | 🟡 chờ QA | ~16:16 | ~16:21 | ~0h05 | 680ee1a | [reports/CICD-01.md](reports/CICD-01.md) | |
+| CICD-01 | Lockfile & Node | 0h30 | ✅ QA pass | ~16:16 | ~16:21 | ~0h05 | 680ee1a | [reports/CICD-01.md](reports/CICD-01.md) | ✅ 16:58 (2 ghi chú) |
 | CICD-02 | `.dockerignore` | 0h15 | ⬜ | | | | | | |
 | CICD-03 | Dockerfile backend | 1h | ⬜ | | | | | | |
 | CICD-04 | Dockerfile frontend | 0h30 | ⬜ | | | | | | |
@@ -50,3 +50,4 @@
 | Thời điểm (+07) | Task | Kết quả | Ghi chú |
 |---|---|---|---|
 | 2026-10-19 | CICD-01 | ❌ Chưa nghiệm thu được | Remote `origin` chỉ có `main` (`5dbae93`) và `claude/hopeful-hypatia-8b36i7` (2 commit docs). Không có `package-lock.json`, không có commit `CICD-01:`. Cần push code + báo cáo `reports/CICD-01.md` |
+| 2026-10-19 16:58 | CICD-01 | ✅ PASS | 6/6 checklist đạt trên clone sạch `f005545`. Ghi chú N1 (giờ push), N2 (audit: prod BE 5 high = baseline, không phát sinh mới). Chi tiết: reports/CICD-01.md §8 |

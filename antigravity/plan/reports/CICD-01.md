@@ -104,7 +104,22 @@ dist/assets/index-Crh0xvRN.js   1,329.52 kB │ gzip: 413.35 kB
 ## 8. QA (QA điền)
 | Mục | Giá trị |
 |---|---|
-| QA thực hiện lúc | |
-| Kết luận | |
-| Lỗi tìm thấy | |
-| Thời gian QA | |
+| QA thực hiện lúc | 2026-10-19 16:58 (+07) — Claude Code, trên bản clone sạch của `f005545` |
+| Kết luận | ✅ **PASS** (có 2 ghi chú, không chặn) |
+| Lỗi tìm thấy | Không có lỗi chức năng |
+| Thời gian QA | ~0h10 |
+
+### Checklist (`05-qa-test-plan.md` §3.0)
+| # | Kiểm tra | Kết quả | Bằng chứng |
+|---|---|---|---|
+| 1 | Có 2 lockfile, `lockfileVersion: 3` | ✅ | root `hula-clinic@1.0.0`, frontend `hula-clinic-frontend@1.0.0`, cả hai v3 |
+| 2 | `package.json` không đổi; deps trong lockfile khớp `package.json` | ✅ | `git diff 5dbae93..HEAD -- package.json frontend/package.json` rỗng; mục gốc `packages[""]` khớp 100% |
+| 3 | `npm ci` trên clone sạch | ✅ | Node v22.22.0: BE added 507, FE added 163, exit 0; `git status` sạch sau `npm ci` (lockfile đồng bộ) |
+| 4 | `tsc --noEmit` + `npm run build` | ✅ | BE và FE đều exit 0 |
+| 5 | Chỉ registry chính thức | ✅ | 738/738 `resolved` trỏ `https://registry.npmjs.org` |
+| 6 | Có báo cáo đủ mục thời gian | ✅ | Mục 2 đầy đủ |
+| + | Có binary musl cho image Alpine (chuẩn bị CICD-03/04) | ✅ | Có `@img/sharp-linuxmusl-x64` và `@rollup/rollup-linux-x64-musl` |
+
+### Ghi chú (không chặn)
+- **N1 — Thời điểm "Hoàn thành (push xong)"**: báo cáo ghi ~16:21, nhưng thời điểm này là lúc commit (`7118e16`). Push thật diễn ra sau khi xử lý lệch nhánh, khoảng 16:4x. Lần sau ghi đúng giờ push thành công; thời gian xử lý sự cố git ghi riêng ở mục 6.
+- **N2 — Mục 7 ghi "không có" rủi ro** trong khi audit cho thấy nhiều lỗ hổng. QA đo lại: production deps BE **14 (5 high)**, FE **2 moderate** — **trùng baseline trước khi có lockfile**, tức lockfile không làm phát sinh lỗ hổng mới. Tính cả dev deps: BE 39 (22 high), FE 4 (1 high). Đáng chú ý: `sharp` (không được import ở đâu) kéo theo CVE của libvips (GHSA-f88m-g3jw-g9cj) → củng cố QB-07 (gỡ `sharp`). Theo dõi trong QB-04.

@@ -23,7 +23,7 @@
 |---|---|
 | Nhận task | 2026-10-19 14:00 (+07) |
 | Bắt đầu code | 2026-10-19 14:05 (+07) |
-| Hoàn thành (push xong) | 2026-10-19 14:40 (+07) |
+| Hoàn thành (push thành công lên remote) | 2026-10-19 14:40 (+07) |
 | **Thời gian thực tế** | **0h35** |
 | Ước lượng trong plan | 0h30 |
 | Chênh lệch | +0h05 — lý do: … |
@@ -53,7 +53,8 @@ $ npm run build
 - <file ngoài phạm vi đã phải sửa — hoặc "không có">
 
 ## 7. Rủi ro / cần người quyết
-- <hoặc "không có">
+- Kết quả `npm audit --omit=dev` (BE/FE) nếu task đụng dependency; so với lần trước tăng hay giảm
+- <rủi ro khác, hoặc "không có">
 
 ---
 ## 8. QA (QA điền)
