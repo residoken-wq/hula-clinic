@@ -14,6 +14,20 @@
 
 ## 3. Test case
 
+### 3.0 Checklist QA theo từng task P1 (chạy khi task ở trạng thái 🟡)
+| Task | Kiểm tra |
+|---|---|
+| CICD-01 | (1) Có `package-lock.json` ở root và `frontend/`, `lockfileVersion: 3`. (2) `git diff` của `package.json` 2 nơi = rỗng (không đổi version). (3) Clone sạch → `npm ci --legacy-peer-deps` (root) và `npm ci` (frontend) exit 0. (4) `npx tsc --noEmit` sạch cả 2 nơi. (5) Lockfile không chứa registry lạ (chỉ `registry.npmjs.org`). (6) Có `reports/CICD-01.md` với đủ mục thời gian |
+| CICD-02 | Build image khi có `.env` giả trong context → `docker run --rm <img> ls -a /app` không thấy `.env`, `node_modules` local |
+| CICD-03 | `whoami` = `node`; `docker inspect` có Healthcheck; base `node:22-alpine`; stage `development` vẫn chạy |
+| CICD-04 | Build OK; `--build-arg VITE_API_ENCRYPTION_KEY=x` được nhúng vào bundle (grep trong `dist`) |
+| CICD-05 | TC: 200 khi DB lên, 503 khi DB dừng, không cần token |
+| CICD-06 | TC-CD-06; dev mode chạy như cũ; FE/BE cùng khóa dev thì tạo bệnh nhân được |
+| CICD-07 | TC-CD-01 |
+| CICD-08 | TC-CD-02, TC-CD-03; job deploy "skipped" khi chưa đặt `AUTO_DEPLOY` |
+| CICD-09 | TC-CD-04, 05, 07, 08 trên local (tag image `:test`) |
+| CICD-10 | Một người chưa từng làm đọc `DEPLOYMENT.md` làm theo được tới khi demo chạy |
+
 ### 3.1 CI/CD & Deploy (P1)
 | ID | Bước | Kỳ vọng |
 |---|---|---|

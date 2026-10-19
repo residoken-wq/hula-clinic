@@ -32,9 +32,15 @@ P2 và P3 có thể làm song song sau khi P1 xong.
 Thực hiện task <ID> trong antigravity/plan/tasks/<file>.md.
 - Chỉ sửa các file được liệt kê trong task; cần sửa thêm file khác thì dừng lại và hỏi.
 - Không đọc/ghi file .env thật; secret dùng placeholder CHANGE_ME.
-- Chạy đủ các lệnh trong mục "Kiểm tra" và dán kết quả.
-- Commit message: "<ID>: <mô tả ngắn>".
+- Chạy đủ các lệnh trong mục "Kiểm tra" / "Nghiệm thu" và dán kết quả.
+- Ghi lại thời điểm bắt đầu và kết thúc (giờ VN, +07).
+- Khi xong: tạo antigravity/plan/reports/<ID>.md theo antigravity/plan/REPORT-TEMPLATE.md,
+  cập nhật dòng <ID> trong antigravity/plan/PROGRESS.md (trạng thái 🟡 chờ QA).
+- Commit code + báo cáo trong cùng 1 commit, message "<ID>: <mô tả ngắn>".
+- PUSH lên branch phase (vd. feat/p1-cicd), KHÔNG push thẳng main. Chưa push = chưa xong.
 ```
+
+**Luồng một task:** ⬜ → 🔄 (Antigravity làm) → 🟡 (đã push + có báo cáo) → QA (Claude Code đọc commit + báo cáo, chạy lại lệnh kiểm tra) → ✅ / ❌ (ghi vào `PROGRESS.md` §Nhật ký QA và mục 8 của báo cáo).
 
 ## 4. Quy tắc chung cho mọi task (Definition of Done)
 1. `npx tsc --noEmit` sạch ở cả backend (root) và `frontend/`.
