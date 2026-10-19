@@ -172,3 +172,21 @@ dist/assets/index-Crh0xvRN.js   1,329.52 kB │ gzip: 413.35 kB
 ### Ghi chú (không cần Antigravity xử lý)
 - HEALTHCHECK sẽ báo `unhealthy` cho tới khi có CICD-05 (`/api/health`). Đúng thứ tự plan, không phải lỗi.
 - **Môi trường QA:** Docker Hub trả 429 (rate limit) và sandbox QA đi qua proxy chặn TLS (`SELF_SIGNED_CERT_IN_CHAIN`). QA dùng bản `node:22-alpine` lấy từ `mirror.gcr.io` có thêm CA của proxy, **chỉ dùng trên máy QA**. Dockerfile không bị sửa. GitHub Actions và VPS không gặp vấn đề này.
+
+### QA lần 2 (sau Lần sửa 1)
+| Mục | Giá trị |
+|---|---|
+| QA thực hiện lúc | 2026-10-19 19:39 (+07) — clone sạch `4c03bf5` |
+| Kết luận | ✅ **PASS** — QA-03-1 và QA-03-2 đã đóng |
+| Thời gian QA | ~0h05 |
+
+| Kiểm tra | Kết quả |
+|---|---|
+| Diff đúng 1 dòng (`chown -R node:node /app/uploads`) | ✅ |
+| Image size | ✅ **419 MB** (trước 598 MB, giảm 179 MB) |
+| `whoami` = `node` | ✅ |
+| `dist/` và `node_modules/` read-only với user `node`; `uploads/` ghi được | ✅ |
+| Smoke boot: 11 module init, 0 lỗi `MODULE_NOT_FOUND`/`EACCES` | ✅ |
+| Stage `development` build được | ✅ |
+| Báo cáo mục 5, 6 khớp code | ✅ |
+
