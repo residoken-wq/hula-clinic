@@ -6,7 +6,7 @@
 | Task ID | CICD-03 |
 | Người thực hiện | Antigravity (người giao: ntnhan) |
 | Branch | `claude/hopeful-hypatia-8b36i7` |
-| Commit | `CICD-03: cap nhat Dockerfile backend node 22 va multi-stage` (để trống hash, QA điền sau khi đối chiếu remote) |
+| Commit | `CICD-03: fix QA-03-1 chown uploads` (để trống hash, QA điền sau khi đối chiếu remote) |
 | PR | chưa tạo |
 
 ## 2. Thời gian
@@ -14,10 +14,11 @@
 |---|---|
 | Nhận task | 2026-10-19 17:31 (+07) |
 | Bắt đầu code | 2026-10-19 17:33 (+07) |
-| Hoàn thành (push thành công lên remote) | 2026-10-19 17:36 (+07) |
-| **Thời gian thực tế** | **0h05** |
+| Hoàn thành lần đầu | 2026-10-19 17:36 (+07) |
+| Hoàn thành sửa lần 1 (push xong) | 2026-10-19 19:22 (+07) |
+| **Thời gian thực tế** | **0h10** (0h05 lần đầu + 0h05 lần sửa 1) |
 | Ước lượng trong plan | 1h |
-| Chênh lệch | -0h55 — lý do: đặc tả Dockerfile chi tiết và rõ ràng, kiểm tra build cục bộ thuận lợi |
+| Chênh lệch | -0h50 — lý do: tinh chỉnh Dockerfile nhanh chóng, kiểm tra build thuận lợi |
 
 ## 3. Thay đổi
 | File | Loại (A/M/D) | Mô tả ngắn |
@@ -28,10 +29,10 @@ Thư viện thêm, xóa hoặc đổi phiên bản: không có
 
 ## 4. Kết quả kiểm tra (dán output thật, rút gọn nếu dài)
 
-### Git diff `Dockerfile`:
+### Git diff `Dockerfile` (toàn bộ thay đổi so với bản gốc):
 ```diff
 diff --git a/Dockerfile b/Dockerfile
-index 9e60662..19f819c 100644
+index 9e60662..be5bdb2 100644
 --- a/Dockerfile
 +++ b/Dockerfile
 @@ -1,9 +1,9 @@
@@ -66,7 +67,7 @@ index 9e60662..19f819c 100644
 +COPY package.json package-lock.json ./
 +RUN npm ci --omit=dev --legacy-peer-deps && npm cache clean --force
  COPY --from=build /app/dist ./dist
-+RUN mkdir -p /app/uploads && chown -R node:node /app
++RUN mkdir -p /app/uploads && chown -R node:node /app/uploads
 +USER node
 +EXPOSE 3000
 +HEALTHCHECK --interval=30s --start-period=40s --retries=3 \
@@ -94,7 +95,7 @@ $ cd frontend && npm run build
 dist/index.html                     0.82 kB │ gzip:   0.54 kB
 dist/assets/index-QuVQyYdA.css      5.46 kB │ gzip:   1.59 kB
 dist/assets/index-Crh0xvRN.js   1,329.52 kB │ gzip: 413.35 kB
-✓ built in 15.64s
+✓ built in 18.15s
 (Exit code: 0)
 ```
 
@@ -104,7 +105,7 @@ dist/assets/index-Crh0xvRN.js   1,329.52 kB │ gzip: 413.35 kB
 | 1 | Base `node:22-alpine` cho mọi stage | ✅ | `FROM node:22-alpine AS base`, `FROM node:22-alpine AS production` |
 | 2 | Stage base dùng `npm ci --legacy-peer-deps` và copy `tsconfig.json`, `nest-cli.json` | ✅ | Dockerfile dòng 1-6 |
 | 3 | Stage build chỉ copy `src/` và chạy `npm run build` | ✅ | Dockerfile dòng 13-16 |
-| 4 | Stage production: `NODE_ENV=production`, `npm ci --omit=dev`, chown `uploads` cho `node:node`, `USER node`, `EXPOSE 3000` | ✅ | Dockerfile dòng 18-27 |
+| 4 | Stage production: `NODE_ENV=production`, `npm ci --omit=dev`, chown `uploads` cho `node:node`, `USER node`, `EXPOSE 3000` | ✅ | Dockerfile dòng 19-30; dòng 25: `RUN mkdir -p /app/uploads && chown -R node:node /app/uploads` |
 | 5 | `HEALTHCHECK` gọi `wget -qO- http://127.0.0.1:3000/api/health` | ✅ | Dockerfile dòng 28-29 |
 | 6 | Giữ nguyên stage `development` | ✅ | Dockerfile dòng 8-11 |
 | 7 | `docker build --target production -t hula-api:test .` & `whoami` = `node` | ⚠️ Chờ QA test | Máy dev local không có Docker engine daemon trực tiếp (Docker chạy qua WSL2/VPS/CI theo `rules.md`), Dockerfile đã sẵn sàng cho QA nghiệm thu bằng lệnh build |
@@ -112,11 +113,23 @@ dist/assets/index-Crh0xvRN.js   1,329.52 kB │ gzip: 413.35 kB
 | 9 | `npm run build` chạy được ở cả root và frontend (DoD) | ✅ | Cả hai build thành công, exit code 0 |
 
 ## 6. Sai lệch so với spec & việc phát sinh
-- không có
+- Ở lần commit đầu (`6e52000`), lệnh chown bị nhầm phạm vi thành `chown -R node:node /app` thay vì `/app/uploads`, làm phát sinh layer thừa 149MB (tổng image 598MB). QA đã phát hiện tại QA-03-1. Đã sửa lại đúng phạm vi `chown -R node:node /app/uploads` ở Lần sửa 1.
 
 ## 7. Rủi ro / cần người quyết
 - Task không đụng dependency
 - Không có rủi ro khác
+
+## Lần sửa 1
+| Mốc | Thời điểm |
+|---|---|
+| Bắt đầu sửa | 2026-10-19 19:17 (+07) |
+| Kết thúc sửa | 2026-10-19 19:22 (+07) |
+| Thời gian sửa | 0h05 |
+| **Tổng thời gian thực tế lũy kế** | **0h10** (0h05 lần đầu + 0h05 sửa) |
+
+### Việc đã sửa:
+1. **QA-03-1 (Dockerfile dòng 25):** Sửa `RUN mkdir -p /app/uploads && chown -R node:node /app` thành `RUN mkdir -p /app/uploads && chown -R node:node /app/uploads`. Giúp loại bỏ layer thừa 149MB (dự kiến giảm kích thước image từ 598MB xuống ~419MB) và giữ cho `dist/`, `node_modules/` ở trạng thái read-only đối với user `node`.
+2. **QA-03-2 (Báo cáo):** Cập nhật mục 4 (git diff chính xác), mục 5 (bằng chứng dòng 25 chown uploads), mục 6 (ghi nhận phát sinh QA-03-1 đã khắc phục).
 
 ---
 ## 8. QA (QA điền)

@@ -22,7 +22,7 @@ ENV NODE_ENV=production
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --legacy-peer-deps && npm cache clean --force
 COPY --from=build /app/dist ./dist
-RUN mkdir -p /app/uploads && chown -R node:node /app
+RUN mkdir -p /app/uploads && chown -R node:node /app/uploads
 USER node
 EXPOSE 3000
 HEALTHCHECK --interval=30s --start-period=40s --retries=3 \
