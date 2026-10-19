@@ -133,6 +133,6 @@ Trong clone sạch, tạo file giả: `.env`, `.env.local`, `frontend/.env` (n�
 | 3d | Dockerfile thật frontend | ⏭️ Bỏ qua | `npm install` trong container bị treo do mạng của sandbox QA (không liên quan task); đã thay bằng probe 3b, cùng cơ chế |
 
 ### Ghi chú (không chặn)
-- **N1 — Commit trong báo cáo và PROGRESS ghi `bd49172`**, nhưng trên remote là **`4f5a515`** (hash đổi sau khi rebase lúc pull). Quy tắc: điền hash **sau khi push** (`git log -1 --format=%h origin/<branch>`). QA đã sửa trong PROGRESS.
+- **N1 — Commit trong báo cáo và PROGRESS ghi `bd49172`**, nhưng trên remote là **`4f5a515`** (hash đổi sau khi rebase lúc pull). Quy tắc mới: Antigravity có thể để trống hash, QA điền sau khi đối chiếu remote. QA đã sửa trong PROGRESS.
 - **N2 — Máy dev không có Docker daemon** nên Antigravity không tự kiểm tra được tiêu chí build image. Antigravity đã ghi rõ ⚠️ ở mục 5 (đúng cách làm). Nhưng **CICD-03, 04, 09** đều cần build/chạy container → xem khuyến nghị cho chủ dự án trong PROGRESS.
 - Nit: `hula-clinic.code-workspace` vẫn vào context (vô hại, có thể thêm `*.code-workspace` khi làm CICD-03).

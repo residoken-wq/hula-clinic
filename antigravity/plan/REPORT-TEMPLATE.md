@@ -15,7 +15,7 @@
 | Task ID | CICD-01 |
 | Người thực hiện | Antigravity (người giao: ntnhan) |
 | Branch | `<tên branch>` |
-| Commit | `<sha 7 ký tự>` — `<commit message>` (lấy **sau khi push**: `git log -1 --format=%h origin/<branch>`) |
+| Commit | `<sha 7 ký tự>` — `<commit message>` — để trống hash được, QA điền sau khi đối chiếu remote (hash đổi khi rebase lúc pull) |
 | PR | <link PR hoặc "chưa tạo"> |
 
 ## 2. Thời gian
