@@ -115,7 +115,24 @@ dist/assets/index-Crh0xvRN.js   1,329.52 kB │ gzip: 413.35 kB
 ## 8. QA (QA điền)
 | Mục | Giá trị |
 |---|---|
-| QA thực hiện lúc | |
-| Kết luận | |
-| Lỗi tìm thấy | |
-| Thời gian QA | |
+| QA thực hiện lúc | 2026-10-19 17:24 (+07) — Claude Code, clone sạch `4f5a515`, Docker 29.8.2 |
+| Kết luận | ✅ **PASS** (2 ghi chú, không chặn) |
+| Lỗi tìm thấy | Không có lỗi chức năng |
+| Thời gian QA | ~0h20 (gồm khởi động Docker daemon trên máy QA) |
+
+### Cách test
+Trong clone sạch, tạo file giả: `.env`, `.env.local`, `frontend/.env` (nội dung `FAKE_QA=1`), thư mục `node_modules/qa-marker`, `frontend/node_modules/qa-marker`, `dist/`, `frontend/dist/`, `uploads/qa.jpg`, `x.log`.
+
+| # | Kiểm tra | Kết quả | Bằng chứng |
+|---|---|---|---|
+| 1 | Nội dung `.dockerignore` root khớp spec | ✅ | Đủ 12 pattern |
+| 2 | Nội dung `frontend/.dockerignore` khớp spec | ✅ | Đủ 5 pattern |
+| 3a | Build context root (probe `COPY . /ctx`) | ✅ | Chỉ còn: `.dockerignore .env.example .gitattributes .gitignore Dockerfile hula-clinic.code-workspace nest-cli.json package*.json src/ tsconfig.json`. **Không có** `.env`, `.env.local`, `node_modules`, `dist`, `uploads`, `x.log`, `.git`, `antigravity`, `frontend`, `docker-compose.yml.bk` |
+| 3b | Build context frontend (probe) | ✅ | Chỉ còn: `.dockerignore Dockerfile index.html nginx.conf package*.json src/ tsconfig*.json vite.config.ts`. **Không có** `.env`, `node_modules`, `dist` |
+| 3c | Dockerfile thật, stage `development` (backend, có `COPY . .`): `docker run --rm <img> ls -a /app` | ✅ | `/app` không có `.env`; `node_modules` là bản cài trong image (không có `qa-marker`) |
+| 3d | Dockerfile thật frontend | ⏭️ Bỏ qua | `npm install` trong container bị treo do mạng của sandbox QA (không liên quan task); đã thay bằng probe 3b, cùng cơ chế |
+
+### Ghi chú (không chặn)
+- **N1 — Commit trong báo cáo và PROGRESS ghi `bd49172`**, nhưng trên remote là **`4f5a515`** (hash đổi sau khi rebase lúc pull). Quy tắc: điền hash **sau khi push** (`git log -1 --format=%h origin/<branch>`). QA đã sửa trong PROGRESS.
+- **N2 — Máy dev không có Docker daemon** nên Antigravity không tự kiểm tra được tiêu chí build image. Antigravity đã ghi rõ ⚠️ ở mục 5 (đúng cách làm). Nhưng **CICD-03, 04, 09** đều cần build/chạy container → xem khuyến nghị cho chủ dự án trong PROGRESS.
+- Nit: `hula-clinic.code-workspace` vẫn vào context (vô hại, có thể thêm `*.code-workspace` khi làm CICD-03).

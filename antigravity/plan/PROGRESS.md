@@ -8,7 +8,7 @@
 | ID | Task | Ước lượng | Trạng thái | Bắt đầu | Hoàn thành | Thực tế | Commit | Báo cáo | QA |
 |---|---|---|---|---|---|---|---|---|---|
 | CICD-01 | Lockfile & Node | 0h30 | ✅ QA pass | ~16:16 | ~16:21 | ~0h05 | 680ee1a | [reports/CICD-01.md](reports/CICD-01.md) | ✅ 16:58 (2 ghi chú) |
-| CICD-02 | `.dockerignore` | 0h15 | 🟡 chờ QA | 17:01 | 17:07 | 0h06 | bd49172 | [reports/CICD-02.md](reports/CICD-02.md) | |
+| CICD-02 | `.dockerignore` | 0h15 | ✅ QA pass | 17:01 | 17:07 | 0h06 | 4f5a515 | [reports/CICD-02.md](reports/CICD-02.md) | ✅ 17:24 (2 ghi chú) |
 | CICD-03 | Dockerfile backend | 1h | ⬜ | | | | | | |
 | CICD-04 | Dockerfile frontend | 0h30 | ⬜ | | | | | | |
 | CICD-05 | `/api/health` | 0h45 | ⬜ | | | | | | |
@@ -51,3 +51,4 @@
 |---|---|---|---|
 | 2026-10-19 | CICD-01 | ❌ Chưa nghiệm thu được | Remote `origin` chỉ có `main` (`5dbae93`) và `claude/hopeful-hypatia-8b36i7` (2 commit docs). Không có `package-lock.json`, không có commit `CICD-01:`. Cần push code + báo cáo `reports/CICD-01.md` |
 | 2026-10-19 16:58 | CICD-01 | ✅ PASS | 6/6 checklist đạt trên clone sạch `f005545`. Ghi chú N1 (giờ push), N2 (audit: prod BE 5 high = baseline, không phát sinh mới). Chi tiết: reports/CICD-01.md §8 |
+| 2026-10-19 17:24 | CICD-02 | ✅ PASS | Build context root + frontend không chứa `.env*`, `node_modules`, `dist`, `uploads`, log (probe + Dockerfile thật stage development). N1: hash commit sai (`bd49172` → `4f5a515`). N2: máy dev không có Docker → cần Docker trong WSL2 cho CICD-03/04/09 |
