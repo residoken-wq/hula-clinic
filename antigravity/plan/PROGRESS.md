@@ -7,7 +7,7 @@
 ## P1 — CI/CD & Deploy
 | ID | Task | Ước lượng | Trạng thái | Bắt đầu | Hoàn thành | Thực tế | Commit | Báo cáo | QA |
 |---|---|---|---|---|---|---|---|---|---|
-| CICD-01 | Lockfile & Node | 0h30 | 🟡 Báo xong, **chưa thấy trên remote** (QA lúc 2026-10-19) | | | | | | ❌ Chưa push |
+| CICD-01 | Lockfile & Node | 0h30 | 🟡 chờ QA | ~16:16 | ~16:21 | ~0h05 | 680ee1a | [reports/CICD-01.md](reports/CICD-01.md) | |
 | CICD-02 | `.dockerignore` | 0h15 | ⬜ | | | | | | |
 | CICD-03 | Dockerfile backend | 1h | ⬜ | | | | | | |
 | CICD-04 | Dockerfile frontend | 0h30 | ⬜ | | | | | | |
